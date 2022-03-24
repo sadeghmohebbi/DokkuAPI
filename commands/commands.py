@@ -254,3 +254,8 @@ def git_from_image(app_name, docker_image):
     command = f'git:from-image {app_name} {docker_image}'
     success, message = __execute_command(command)
     return success, message
+
+def proxy_set_ports(app_name, port_mappings):
+    command = f'proxy:ports-set {app_name} {port_mappings}'
+    success, message = __execute_command(command)
+    return success, message
