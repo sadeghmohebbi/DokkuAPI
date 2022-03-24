@@ -1,5 +1,5 @@
 from sys import stdout
-from commands.ssh import run_command, run_root_command
+from commands.ssh import run_command, run_root_command, run_docker_command
 
 
 def __execute_command(command):
@@ -13,6 +13,14 @@ def __execute_command(command):
 def __execute_root_command(command):
     stdout.write(f'\nExecuting root command: {command}\n')
     success, message = run_root_command(command)
+    stdout.write(f'Result: {success}\n')
+    stdout.write(f'Output: {message}\n')
+    return success, message
+
+
+def __execute_docker_command(command):
+    stdout.write(f'\nExecuting docker command: {command}\n')
+    success, message = run_docker_command(command)
     stdout.write(f'Result: {success}\n')
     stdout.write(f'Output: {message}\n')
     return success, message
@@ -224,3 +232,25 @@ def config_apply(app_name):
     success, message = __execute_command(command)
     return success, message
 
+
+# mount a storage
+def storage_mount(app_name, mount_point_left, mount_point_right):
+    if "/" not in mount_point_left:
+        __execute_docker_command("volume create " + app_name)
+    command = f'storage:mount {app_name} {mount_point_left}:{mount_point_right}'
+    success, message = __execute_command(command)
+    return success, message
+
+
+# authenticate git server
+def git_auth(host, username, password):
+    command = f'git:auth {host} {username} {password}'
+    success, message = __execute_command(command)
+    return success, message
+
+
+# clone for docker image
+def git_from_image(app_name, docker_image):
+    command = f'git:from-image {app_name} {docker_image}'
+    success, message = __execute_command(command)
+    return success, message
