@@ -3,7 +3,6 @@ import socket
 from paramiko.client import SSHClient, AutoAddPolicy
 from config import settings
 
-
 ssh_hostname = settings.SSH_HOSTNAME
 ssh_port = settings.SSH_PORT
 ssh_key_path = settings.SSH_KEY_PATH
@@ -38,8 +37,3 @@ def run_command(command):
 def run_root_command(command):
     success, message = __execute_command(command, 'root')
     return success, message
-
-def run_docker_command(command):
-    success, message = __execute_command(command, 'root', 'docker')
-    return success, message
-
