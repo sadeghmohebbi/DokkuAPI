@@ -13,7 +13,7 @@ def get_router(app):
     # Mount a Storage
     @router.post("/storage/{app_name}", response_description="Mount a Storage")
     async def create_app(request: Request, app_name: str, api_key: APIKey = Depends(validate_api_key)):
-        body_parsed = request.json()
+        body_parsed = await request.json()
         success, message = commands.storage_mount(app_name=app_name, mount_point_left=body_parsed["mount_point_left"],
                                                   mount_point_right=body_parsed["mount_point_right"])
         content = {"success": success, "message": message}
