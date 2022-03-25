@@ -12,7 +12,7 @@ def get_router(app):
 
     # Creates a persistent storage directory in the recommended storage path
     @router.post("/storage/create", response_description="Creating storage directories")
-    async def create_app(request: Request, app_name: str, api_key: APIKey = Depends(validate_api_key)):
+    async def create_app(request: Request, api_key: APIKey = Depends(validate_api_key)):
         body_parsed = await request.json()
         success, message = commands.storage_create(volume_name=body_parsed["name"])
         content = {"success": success, "message": message}
