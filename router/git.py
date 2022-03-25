@@ -20,10 +20,8 @@ def get_router(app):
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
 
     # Updates an app's git repository with a given docker image
-    @router.post("/git/{app_name}/from-image/{docker_image}",
-                 response_description="Updates an app's git repository with a given docker image")
-    async def create_app(request: Request, app_name: str,
-                         api_key: APIKey = Depends(validate_api_key)):
+    @router.post("/git/{app_name}/from-image", response_description="Updates an app's git repository with a given docker image")
+    async def create_app(request: Request, app_name: str, api_key: APIKey = Depends(validate_api_key)):
         body_parsed = await request.json()
         success, message = commands.git_from_image(app_name=app_name, docker_image=body_parsed["docker_image"])
         content = {"success": success, "message": message}
