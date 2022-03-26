@@ -27,7 +27,7 @@ def get_router(app):
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
 
     # Set LetsEncrypt mail
-    @router.post("/letsencrypt/{mail}", response_description="Set a mail for LetsEncrypt")
+    @router.post("/letsencrypt/mail/{mail}", response_description="Set a mail for LetsEncrypt")
     async def letsencrypt_set_mail(request: Request, mail: str, api_key: APIKey = Depends(validate_api_key)):
         success, message = commands.set_letsencrypt_mail(mail)
         content = {"success": success, "message": message}
@@ -35,7 +35,7 @@ def get_router(app):
 
     # Enable LetsEncrypt for an application
     @router.post("/letsencrypt/app/{app_name}", response_description="Enable LetsEncrypt for an application")
-    async def letsencrypt_enable_app(request: Request, app_name: str,  api_key: APIKey = Depends(validate_api_key)):
+    async def letsencrypt_enable_app(request: Request, app_name: str, api_key: APIKey = Depends(validate_api_key)):
         success, message = commands.enable_letsencrypt(app_name)
         content = {"success": success, "message": message}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
