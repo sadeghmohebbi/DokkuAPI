@@ -10,13 +10,6 @@ def get_router(app):
     # Create a FastAPI router
     router = APIRouter()
 
-    # List all applications
-    @router.get("/apps", response_description="List all applications")
-    async def list_apps(request: Request, api_key: APIKey = Depends(validate_api_key)):
-        success = commands.list_apps()
-        content = {"success": success}
-        return JSONResponse(status_code=status.HTTP_200_OK, content=content)
-
     # Create an application
     @router.post("/apps/{app_name}", response_description="Create an application")
     async def create_app(request: Request, app_name: str, api_key: APIKey = Depends(validate_api_key)):

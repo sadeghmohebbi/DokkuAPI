@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Request, status
+from fastapi import APIRouter, Request, status, Depends
 from fastapi.responses import JSONResponse
 from config import settings
-
+from commands import commands
+from router.key import validate_api_key
+from fastapi.openapi.models import APIKey
 
 # Defining our API router
 def get_router(app):
@@ -10,9 +12,10 @@ def get_router(app):
 
     # We define a root path for our API with metadata
     @router.get("/", response_description="API Metadata")
-    async def metadata(request: Request):
+    async def metadata(request: Request, api_key: APIKey = Depends(validate_api_key)):
         result = {
             "api": settings.API_NAME,
+            "healthy": commands.list_apps(),
             "version": settings.API_VERSION_NUMBER,
             "author": "Sadegh Mohebbi",
             "company": "PingBeen",

@@ -10,29 +10,6 @@ def get_router(app):
     # Create a FastAPI router
     router = APIRouter()
 
-    # List all databases
-    @router.get("/databases/{plugin_name}", response_description="List all databases")
-    async def list_databases(request: Request, plugin_name: str, api_key: APIKey = Depends(validate_api_key)):
-        success = commands.list_databases(plugin_name)
-        content = {"success": success}
-        return JSONResponse(status_code=status.HTTP_200_OK, content=content)
-
-    # Check if a database exists
-    @router.get("/databases/{plugin_name}/{database_name}", response_description="Check if a database exists")
-    async def database_exists(request: Request, plugin_name: str, database_name: str,
-                              api_key: APIKey = Depends(validate_api_key)):
-        success = commands.database_exists(plugin_name, database_name)
-        content = {"success": success}
-        return JSONResponse(status_code=status.HTTP_200_OK, content=content)
-
-    # List linked apps
-    @router.get("/databases/links/{plugin_name}/{database_name}", response_description="List linked apps")
-    async def database_linked_apps(request: Request, plugin_name: str, database_name: str,
-                                   api_key: APIKey = Depends(validate_api_key)):
-        success = commands.database_linked_apps(plugin_name, database_name)
-        content = {"success": success}
-        return JSONResponse(status_code=status.HTTP_200_OK, content=content)
-
     # Link a database to an app
     @router.post("/databases/links/{plugin_name}/{database_name}/{app_name}",
                  response_description="Link a database to an app")

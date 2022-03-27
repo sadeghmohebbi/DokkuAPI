@@ -10,13 +10,6 @@ def get_router(app):
     # Create a FastAPI router
     router = APIRouter()
 
-    # List application configurations
-    @router.get("/config/{app_name}", response_description="List application configurations")
-    async def config_show(request: Request, app_name: str, api_key: APIKey = Depends(validate_api_key)):
-        success = commands.config_show(app_name)
-        content = {"success": success}
-        return JSONResponse(status_code=status.HTTP_200_OK, content=content)
-
     # Set application configuration key
     @router.post("/config/{app_name}/{key}/{value}", response_description="Set application configuration key (without restart)")
     async def config_set(request: Request, app_name: str, key: str, value: str,
