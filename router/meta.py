@@ -14,10 +14,10 @@ def get_router(app):
         result = {
             "api": settings.API_NAME,
             "version": settings.API_VERSION_NUMBER,
-            "author": "Nuno Bispo",
-            "company": "Developer Service",
-            "website": "https://developer-service.io",
-            "email": "developer@developer-service.io",
+            "author": "Sadegh Mohebbi",
+            "company": "PingBeen",
+            "website": "https://pingbeen.com",
+            "email": "mohebbi.sadegh@gmail.com",
         }
         return JSONResponse(status_code=status.HTTP_200_OK, content=result)
 

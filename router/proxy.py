@@ -13,8 +13,8 @@ def get_router(app):
     # Create an application
     @router.post("/proxy/{app_name}/set-ports/{port_mapping}", response_description="Create an application")
     async def create_app(request: Request, app_name: str, port_mapping, api_key: APIKey = Depends(validate_api_key)):
-        success, message = commands.proxy_set_ports(app_name, port_mapping)
-        content = {"success": success, "message": message}
+        success = commands.proxy_set_ports(app_name, port_mapping)
+        content = {"success": success}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
 
     # We return our router

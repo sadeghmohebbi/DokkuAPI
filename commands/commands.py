@@ -7,7 +7,7 @@ def __execute_command(command):
     success, message = run_command(command)
     stdout.write(f'Result: {success}\n')
     stdout.write(f'Output: {message}\n')
-    return success, message
+    return True
 
 
 def __execute_root_command(command):
@@ -15,35 +15,31 @@ def __execute_root_command(command):
     success, message = run_root_command(command)
     stdout.write(f'Result: {success}\n')
     stdout.write(f'Output: {message}\n')
-    return success, message
+    return True
 
 
 # Creates an application
 def create_app(app_name):
     command = f'apps:create {app_name}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # Deletes an application
 def delete_app(app_name):
     command = f'--force apps:destroy {app_name}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # Lists all applications
 def list_apps():
     command = 'apps:list'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # List plugins
 def list_plugins():
     command = 'plugin:list'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # Check if a plugin is installed
@@ -52,9 +48,9 @@ def is_plugin_installed(plugin_name):
     if success:
         for plugin in message.split('\n'):
             if plugin_name in plugin:
-                return True, 'Plugin is installed'
-        return False, 'Plugin is not installed'
-    return False, message
+                return True
+        stdout.write('Result: Plugin is not installed\n')
+    return False
 
 
 # Install a plugin
@@ -66,141 +62,131 @@ def install_plugin(plugin_name):
     elif plugin_name == 'letsencrypt':
         command = 'plugin:install https://github.com/dokku/dokku-letsencrypt.git'
     else:
-        return False, 'Plugin not found'
-    success, message = __execute_root_command(command)
-    return success, message
+        stdout.write('Result: Plugin not found\n')
+        return False
+    return __execute_root_command(command)
 
 
 # Uninstall a plugin
 def uninstall_plugin(plugin_name):
     command = f'plugin:uninstall {plugin_name}'
-    success, message = __execute_root_command(command)
-    return success, message
+    return __execute_root_command(command)
 
 
 # Create a database
 def create_database(plugin_name, database_name):
     if plugin_name != 'postgres' and plugin_name != 'mysql':
-        return False, 'Plugin not found'
+        stdout.write('Result: Plugin not found\n')
+        return False
     command = f'{plugin_name}:create {database_name}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # List databases
 def list_databases(plugin_name):
     if plugin_name != 'postgres' and plugin_name != 'mysql':
-        return False, 'Plugin not found'
+        stdout.write('Result: Plugin not found\n')
+        return False
     command = f'{plugin_name}:list'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # Check if a database exists
 def database_exists(plugin_name, database_name):
     if plugin_name != 'postgres' and plugin_name != 'mysql':
-        return False, 'Plugin not found'
+        stdout.write('Result: Plugin not found\n')
+        return False
     success, message = list_databases(plugin_name)
     if success:
         for database in message.split('\n'):
             if database_name in database:
-                return True, 'Database exists'
-        return False, 'Database does not exist'
-    return False, message
+                return True
+        stdout.write('Result: Database does not exist\n')
+    return False
 
 
 # Delete a database
 def delete_database(plugin_name, database_name):
     if plugin_name != 'postgres' and plugin_name != 'mysql':
-        return False, 'Plugin not found'
+        stdout.write('Result: Plugin not found\n')
+        return False
     command = f'--force {plugin_name}:destroy {database_name}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # List linked apps
 def database_linked_apps(plugin_name, database_name):
     if plugin_name != 'postgres' and plugin_name != 'mysql':
-        return False, 'Plugin not found'
+        stdout.write('Result: Plugin not found\n')
+        return False
     command = f'{plugin_name}:links {database_name}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # Link database to an app
 def link_database(plugin_name, database_name, app_name):
     if plugin_name != 'postgres' and plugin_name != 'mysql':
-        return False, 'Plugin not found'
+        stdout.write('Result: Plugin not found\n')
+        return False
     command = f'--no-restart {plugin_name}:link {database_name} {app_name}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # Unlink database from an app
 def unlink_database(plugin_name, database_name, app_name):
     if plugin_name != 'postgres' and plugin_name != 'mysql':
-        return False, 'Plugin not found'
+        stdout.write('Result: Plugin not found\n')
+        return False
     command = f'--no-restart {plugin_name}:unlink {database_name} {app_name}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # Set domain for an app
 def set_domain(app_name, domain):
     command = f'domains:set {app_name} {domain}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # Remove domain for an app
 def remove_domain(app_name, domain):
     command = f'domains:remove {app_name} {domain}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # Set LetsEncrypt mail
 def set_letsencrypt_mail(email):
     command = f'config:set --global DOKKU_LETSENCRYPT_EMAIL={email}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # Enable LetsEncrypt for an app
 def enable_letsencrypt(app_name):
     command = f'letsencrypt:enable {app_name}'
-    success, message = __execute_command(command)
-    if 'retrieval failed' in message:
-        return False, message
-    return success,
+    return __execute_command(command)
 
 
 # Enable LetsEncrypt auto renewal
 def enable_letsencrypt_auto_renewal():
     command = f'letsencrypt:cron-job --add'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # List application configurations
 def config_show(app_name):
     command = f'config:show {app_name}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # Set application configuration key
 def config_set(app_name, key, value):
     command = f'config:set --no-restart {app_name} {key}={value}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # Unset application configuration key
 def config_unset(app_name, key):
     command = f'config:unset --no-restart {app_name} {key}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # Set application configuration from file
@@ -214,46 +200,39 @@ def config_file(app_name, contents):
                 continue
             keys = keys + line + ' '
     command = f'config:set --no-restart {app_name} {keys}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # Apply application configuration
 def config_apply(app_name):
     command = f'ps:rebuild {app_name}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # create a storage
 def storage_create(volume_name):
     command = f'storage:ensure-directory {volume_name} --chown false'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # mount a storage
 def storage_mount(app_name, mount_point_left, mount_point_right):
     command = f'storage:mount {app_name} {mount_point_left}:{mount_point_right}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # authenticate git server
 def git_auth(host, username, password):
     command = f'git:auth {host} {username} {password}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 # clone for docker image
 def git_from_image(app_name, docker_image):
     command = f'git:from-image {app_name} {docker_image}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)
 
 
 def proxy_set_ports(app_name, port_mappings):
     command = f'proxy:ports-set {app_name} {port_mappings}'
-    success, message = __execute_command(command)
-    return success, message
+    return __execute_command(command)

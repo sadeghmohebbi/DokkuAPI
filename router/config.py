@@ -13,16 +13,16 @@ def get_router(app):
     # List application configurations
     @router.get("/config/{app_name}", response_description="List application configurations")
     async def config_show(request: Request, app_name: str, api_key: APIKey = Depends(validate_api_key)):
-        success, message = commands.config_show(app_name)
-        content = {"success": success, "message": message}
+        success = commands.config_show(app_name)
+        content = {"success": success}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
 
     # Set application configuration key
     @router.post("/config/{app_name}/{key}/{value}", response_description="Set application configuration key (without restart)")
     async def config_set(request: Request, app_name: str, key: str, value: str,
                          api_key: APIKey = Depends(validate_api_key)):
-        success, message = commands.config_set(app_name, key, value)
-        content = {"success": success, "message": message}
+        success = commands.config_set(app_name, key, value)
+        content = {"success": success}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
 
     # Set application configuration keys from file
@@ -32,8 +32,8 @@ def get_router(app):
                           file: UploadFile = File(..., description="ENV file format (key=value)"),
                           api_key: APIKey = Depends(validate_api_key)):
         contents = await file.read()
-        success, message = commands.config_file(app_name, contents)
-        content = {"success": success, "message": message}
+        success = commands.config_file(app_name, contents)
+        content = {"success": success}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
 
     # Unset application configuration key
@@ -41,16 +41,16 @@ def get_router(app):
                    response_description="Unset application configuration key (without restart)")
     async def config_unset(request: Request, app_name: str, key: str,
                            api_key: APIKey = Depends(validate_api_key)):
-        success, message = commands.config_unset(app_name, key)
-        content = {"success": success, "message": message}
+        success = commands.config_unset(app_name, key)
+        content = {"success": success}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
 
     # Apply application configuration
     @router.post("/config/{app_name}/keys/apply/restart",
                  response_description="Apply application configuration (with restart)")
     async def config_apply(request: Request, app_name: str, api_key: APIKey = Depends(validate_api_key)):
-        success, message = commands.config_apply(app_name)
-        content = {"success": success, "message": message}
+        success = commands.config_apply(app_name)
+        content = {"success": success}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
 
     # We return our router

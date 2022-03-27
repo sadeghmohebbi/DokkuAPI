@@ -14,17 +14,17 @@ def get_router(app):
     @router.post("/storage/create", response_description="Creating storage directories")
     async def create_app(request: Request, api_key: APIKey = Depends(validate_api_key)):
         body_parsed = await request.json()
-        success, message = commands.storage_create(volume_name=body_parsed["name"])
-        content = {"success": success, "message": message}
+        success = commands.storage_create(volume_name=body_parsed["name"])
+        content = {"success": success}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
 
     # Mount a Storage
     @router.post("/storage/{app_name}/mount", response_description="Mount a Storage")
     async def create_app(request: Request, app_name: str, api_key: APIKey = Depends(validate_api_key)):
         body_parsed = await request.json()
-        success, message = commands.storage_mount(app_name=app_name, mount_point_left=body_parsed["mount_point_left"],
-                                                  mount_point_right=body_parsed["mount_point_right"])
-        content = {"success": success, "message": message}
+        success = commands.storage_mount(app_name=app_name, mount_point_left=body_parsed["mount_point_left"],
+                                         mount_point_right=body_parsed["mount_point_right"])
+        content = {"success": success}
         return JSONResponse(status_code=status.HTTP_200_OK, content=content)
 
     # We return our router
